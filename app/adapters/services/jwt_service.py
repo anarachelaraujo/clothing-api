@@ -15,5 +15,5 @@ def generate_token(user: User):
 
 def authenticate_user(user_data: User, user_collection):
     user = user_collection.find_one({"email": user_data.email, "password": user_data.password})
-    return user is not None
+    return user 
 

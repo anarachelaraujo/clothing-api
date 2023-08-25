@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from app.core.entities.user import User
 from app.adapters.services.jwt_service import generate_token, authenticate_user
 from app.adapters.repositories.user_repository import UserRepository
-from app.core.usecases.user_usecase import register_user
+from app.core.usecases.user_usecase import register_user_usecase
 
 router = APIRouter()
 
