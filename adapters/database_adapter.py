@@ -1,6 +1,7 @@
+from typing import Self
 from motor.motor_asyncio import AsyncIOMotorClient
-from core.domain.entities import UserEntity
-from core.domain.repositories import UserRepository
+from core.domain.entities import User, Clothes
+from fastapi import UploadFile
 
 
 class DatabaseUserRepository:
@@ -9,11 +10,16 @@ class DatabaseUserRepository:
             "mongodb+srv://myMac:clothingApp@cluster0.l19f373.mongodb.net/?retryWrites=true&w=majority")
         self.db = self.client["clothing_app"]
         self.users_collection = self.db["user_data"]
+        self.clothes_collection = self.db["clothes"]
 
-    async def find_by_email(self, email: str) -> UserEntity:
+    async def find_by_email(self, email: str) -> User:
         user = await self.users_collection.find_one({"email": email})
-        return UserEntity(**user) if user else None
+        return User(**user) if user else None
 
-    async def insert_user(self, user: UserEntity) -> None:
-        user_data = user.dict()  # Convert UserEntity to a dictionary
+    async def insert_user(self, user: User) -> None:
+        user_data = user.dict()  # Convert User to a dictionary
         await self.users_collection.insert_one(user_data)
+
+    async def insert_clothes(self, clothes: Clothes, file: UploadFile) -> None:
+        clothes_data = clothes.dict()
+        await self.clothes_collection.insert_one(clothes_data, file)

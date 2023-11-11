@@ -2,8 +2,9 @@
 
 import jwt
 import datetime
-from core.domain.entities import UserEntity
+from core.domain.entities import User, Clothes
 from core.domain.repositories import UserRepository
+from fastapi import UploadFile
 
 
 class UserService:
@@ -11,7 +12,7 @@ class UserService:
         self.user_repository = user_repository
 
     async def register_user(self, email: str, password: str) -> None:
-        user = UserEntity(email=email, password=password)
+        user = User(email=email, password=password)
         await self.user_repository.insert_user(user)
 
     async def authenticate_user(self, email: str, password: str) -> bool:
@@ -25,5 +26,8 @@ class UserService:
             token_data, "gwZbGHlt28VoI-NXbc06nX6z5ybqfvW9-KpLAHk1IDQ", algorithm="HS256")
         return token
 
-    async def find_user_by_email(self, email: str) -> UserEntity:
+    async def find_user_by_email(self, email: str) -> User:
         return await self.user_repository.find_by_email(email)
+
+    async def add_new_clothes(self, clothes: Clothes, image: UploadFile) -> None:
+        return await self.user_repository.insert_clothes(clothes, image)

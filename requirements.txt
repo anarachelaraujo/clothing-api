@@ -1,5 +1,5 @@
-fastapi==0.101.1
-uvicorn==0.23.2
-motor==3.2.0
-pydantic==1.10
-python-decouple==3.8
+fastapi
+uvicorn
+motor
+pydantic
+python-decouple

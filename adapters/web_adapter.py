@@ -1,9 +1,13 @@
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from core.application import UserService
 from adapters.database_adapter import DatabaseUserRepository
 from pydantic import BaseModel
+from PIL import Image
+from io import BytesIO
+from bson import ObjectId
+from core.domain.entities import User, Clothes
 
 
 app = FastAPI()
@@ -16,11 +20,6 @@ origins = [
 
 app.add_middleware(CORSMiddleware, allow_origins=origins,
                    allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
-
-
-class User(BaseModel):
-    email: str
-    password: str
 
 
 @app.get("/")
@@ -61,3 +60,17 @@ async def login_for_access_token(user: User):
 @app.get("/options")
 def get_options():
     return ["top", "bottom", "shoes", "accessories"]
+
+
+@app.post("/clothes")
+async def upload_image(clothes: Clothes, imageUpload: UploadFile):
+
+    user_repository = DatabaseUserRepository()
+    user_service = UserService(user_repository)
+
+    image_data = await imageUpload.read()
+    image = Image.open(BytesIO(image_data))
+
+    await user_service.insert_clothes(clothes.color, clothes.type, clothes.description, clothes.userId, image)
+
+    return {"message": "User registered successfully"}

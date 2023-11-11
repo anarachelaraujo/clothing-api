@@ -1,7 +1,7 @@
 import httpx
 from core.application import UserService
 from adapters.database_adapter import DatabaseUserRepository
-from core.domain.entities import UserEntity
+from core.domain.entities import User
 from main import app
 from httpx import AsyncClient
 import pytest
@@ -21,7 +21,7 @@ async def test_register_user():
     user_service = UserService(user_repository)
 
     # Create a user to register
-    user_data = UserEntity(email=random_email, password="password")
+    user_data = User(email=random_email, password="password")
 
     # Test the register_user method
     response = await client.post("/register/", json=user_data.dict())
@@ -36,7 +36,7 @@ async def test_login_for_access_token():
     user_service = UserService(user_repository)
 
     # Create a user to authenticate
-    user_data = UserEntity(email=random_email, password="password")
+    user_data = User(email=random_email, password="password")
 
     # Register the user (this should be in a separate test case)
     await client.post("/register/", json=user_data.dict())
